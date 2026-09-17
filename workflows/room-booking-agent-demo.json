@@ -1,0 +1,270 @@
+{
+  "name": "Meeting Room Booking AI Agent - Public Demo",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Public portfolio workflow\n\nProduction prompts, WhatsApp endpoints, phone numbers, room catalogs, corporate domains, Redis keys, database configuration, credentials and routing rules are intentionally omitted.\n\nThis workflow demonstrates the conversational architecture only.",
+        "height": 320,
+        "width": 500
+      },
+      "id": "agent-note",
+      "name": "Portfolio Notice",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -760,
+        -300
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "portfolio-room-booking-demo",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "agent-webhook",
+      "name": "Receive WhatsApp Event",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -660,
+        120
+      ],
+      "webhookId": "public-room-booking-demo-placeholder"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body ?? $json;\n\nreturn [{\n  json: {\n    requestId: `room-demo-${Date.now()}`,\n    userId: String(body.userId ?? 'demo-user'),\n    message: String(body.message ?? 'Quero reservar uma sala amanhã às 14h.'),\n    inputType: body.inputType === 'audio' ? 'audio' : 'text',\n    receivedAt: new Date().toISOString(),\n    dataClassification: 'fictional-sample'\n  }\n}];"
+      },
+      "id": "agent-normalize",
+      "name": "Normalize Demo Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -420,
+        120
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "agent-protection",
+      "name": "Rate Limit and Debounce - Private Logic Omitted",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        120
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "agent-audio",
+      "name": "Audio Transcription - Integration Omitted",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        120,
+        120
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "agent-memory",
+      "name": "PostgreSQL Memory - Configuration Omitted",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        400,
+        120
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "agent-ai",
+      "name": "Booking AI Agent - Prompt Omitted",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        680,
+        120
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "agent-mcp",
+      "name": "Call Scheduling MCP - Private Endpoint Omitted",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        960,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = String($json.agentResponse ?? 'Solicitação fictícia interpretada e encaminhada para a ferramenta apropriada.');\n\nreturn [{\n  json: {\n    success: true,\n    requestId: $json.requestId,\n    response,\n    reference: 'BOOKING-DEMO-001',\n    disclaimer: 'Public portfolio version: production implementation intentionally omitted.'\n  }\n}];"
+      },
+      "id": "agent-validate",
+      "name": "Validate and Format Demo Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1240,
+        120
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "agent-send",
+      "name": "Send WhatsApp Message - Endpoint Omitted",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1520,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "agent-response",
+      "name": "Acknowledge Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1780,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Scheduled automations\n\nThe private production workflow also contains independent routines for meeting reminders, completion status, manual-deletion reconciliation, duplicate-notification protection and failure logging. Operational schedules and code are not published.",
+        "height": 260,
+        "width": 500
+      },
+      "id": "agent-schedules-note",
+      "name": "Private Scheduled Routines",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        720,
+        380
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Receive WhatsApp Event": {
+      "main": [
+        [
+          {
+            "node": "Normalize Demo Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Demo Message": {
+      "main": [
+        [
+          {
+            "node": "Rate Limit and Debounce - Private Logic Omitted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rate Limit and Debounce - Private Logic Omitted": {
+      "main": [
+        [
+          {
+            "node": "Audio Transcription - Integration Omitted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audio Transcription - Integration Omitted": {
+      "main": [
+        [
+          {
+            "node": "PostgreSQL Memory - Configuration Omitted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PostgreSQL Memory - Configuration Omitted": {
+      "main": [
+        [
+          {
+            "node": "Booking AI Agent - Prompt Omitted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Booking AI Agent - Prompt Omitted": {
+      "main": [
+        [
+          {
+            "node": "Call Scheduling MCP - Private Endpoint Omitted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Scheduling MCP - Private Endpoint Omitted": {
+      "main": [
+        [
+          {
+            "node": "Validate and Format Demo Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate and Format Demo Response": {
+      "main": [
+        [
+          {
+            "node": "Send WhatsApp Message - Endpoint Omitted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send WhatsApp Message - Endpoint Omitted": {
+      "main": [
+        [
+          {
+            "node": "Acknowledge Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "00000000-0000-4000-8000-000000000201",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

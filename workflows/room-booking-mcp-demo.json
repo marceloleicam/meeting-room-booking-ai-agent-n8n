@@ -1,0 +1,233 @@
+{
+  "name": "Meeting Room Scheduling MCP - Public Demo",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Demonstration only\n\nThe production MCP workflow manages authenticated calendar and booking operations.\n\nConceptual actions:\n- Check availability\n- Create booking\n- List future bookings\n- Reschedule booking\n- Cancel booking\n\nCalendar IDs, room names, table IDs, event IDs, credentials and business rules are not published.",
+        "height": 380,
+        "width": 500
+      },
+      "id": "mcp-note",
+      "name": "Portfolio Notice",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -760,
+        -340
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "portfolio-room-scheduling-tools-demo",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "mcp-webhook",
+      "name": "Receive Tool Request",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -660,
+        120
+      ],
+      "webhookId": "public-room-tools-placeholder"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body ?? $json;\nconst allowedActions = [\n  'check_availability',\n  'create_booking',\n  'list_bookings',\n  'reschedule_booking',\n  'cancel_booking'\n];\nconst action = String(body.action ?? 'check_availability');\n\nreturn [{\n  json: {\n    action,\n    validAction: allowedActions.includes(action),\n    userId: String(body.userId ?? 'demo-user'),\n    start: String(body.start ?? '2030-01-15T14:00:00-03:00'),\n    end: String(body.end ?? '2030-01-15T15:00:00-03:00'),\n    room: String(body.room ?? 'Demo Room A')\n  }\n}];"
+      },
+      "id": "mcp-validate",
+      "name": "Validate Fictional Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        120
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "mcp-owner",
+      "name": "Verify Booking Ownership - Private Logic Omitted",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        120
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "mcp-router",
+      "name": "Action Router - Business Rules Omitted",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        160,
+        120
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "mcp-availability",
+      "name": "Availability and Conflict Check - Logic Omitted",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        440,
+        120
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "mcp-calendar",
+      "name": "Google Calendar - Credentials Omitted",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        720,
+        120
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "mcp-storage",
+      "name": "Booking Registry - Table Mapping Omitted",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: {\n    success: Boolean($json.validAction),\n    action: $json.action,\n    result: {\n      reference: 'BOOKING-DEMO-001',\n      room: $json.room,\n      start: $json.start,\n      end: $json.end,\n      status: $json.validAction ? 'demo-confirmed' : 'demo-rejected'\n    },\n    dataClassification: 'fictional-sample'\n  }\n}];"
+      },
+      "id": "mcp-normalize",
+      "name": "Normalize Fictional Tool Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "mcp-response",
+      "name": "Return Tool Result",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1560,
+        120
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Receive Tool Request": {
+      "main": [
+        [
+          {
+            "node": "Validate Fictional Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Fictional Request": {
+      "main": [
+        [
+          {
+            "node": "Verify Booking Ownership - Private Logic Omitted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify Booking Ownership - Private Logic Omitted": {
+      "main": [
+        [
+          {
+            "node": "Action Router - Business Rules Omitted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Action Router - Business Rules Omitted": {
+      "main": [
+        [
+          {
+            "node": "Availability and Conflict Check - Logic Omitted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Availability and Conflict Check - Logic Omitted": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar - Credentials Omitted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar - Credentials Omitted": {
+      "main": [
+        [
+          {
+            "node": "Booking Registry - Table Mapping Omitted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Booking Registry - Table Mapping Omitted": {
+      "main": [
+        [
+          {
+            "node": "Normalize Fictional Tool Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Fictional Tool Result": {
+      "main": [
+        [
+          {
+            "node": "Return Tool Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "00000000-0000-4000-8000-000000000202",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}
